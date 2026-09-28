@@ -1,0 +1,23 @@
+name: Registry package smoke
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.x'
+      - name: Verify canonical module and buildable packages
+        run: |
+          test "$(go list -m)" = "github.com/blackmore-technology-group/ENTITY-GO-CLEANROOM"
+          go test ./...
+          go list ./... >/dev/null
+          echo 'pkg.go.dev module smoke: PASS'
